@@ -3,8 +3,10 @@
     id="app"
     class="w-[100dvw] h-[100dvh] bg-green flex p-8 overflow-hidden relative no-double-tap-zoom"
   >
-    <div class="grid grid-cols-2 text-white w-full h- full border-white border-8">
-      <div class="border-white border-r-4 flex flex-col justify-center items-center gap-6 relative">
+    <div class="grid grid-cols-1 sm:grid-cols-2 text-white w-full h- full border-white border-8">
+      <div
+        class="border-white border-b-4 sm:border-b-0 sm:border-r-4 flex flex-row-reverse sm:flex-col justify-center items-center gap-6 relative"
+      >
         <!-- <span
           class="absolute right-5 top-[50%] -translate-y-[50%] flex items-center justify-center cursor-pointer"
           @click="switchPlace('A')"
@@ -28,7 +30,9 @@
           {{ teamA.evenPlace }}
         </div>
       </div>
-      <div class="border-white border-l-4 flex flex-col justify-center items-center gap-6 relative">
+      <div
+        class="border-white border-t-4 sm:border-t-0 sm:border-l-4 flex flex-row-reverse sm:flex-col justify-center items-center gap-6 relative"
+      >
         <!-- <span
           class="absolute left-5 top-[50%] -translate-y-[50%] flex items-center justify-center cursor-pointer"
           @click="switchPlace('B')"
@@ -56,7 +60,7 @@
 
     <nav
       class="absolute bottom-0 transition-all duration-700 left-0 font-bold"
-      :class="[isSettingOpen ? 'bottom-0' : 'translate-y-[80dvh] sm:translate-y-[50dvh]']"
+      :class="[isSettingOpen ? 'bottom-0' : 'translate-y-[80dvh] sm:translate-y-[70dvh]']"
     >
       <div
         class="inline-block rounded-t-md sm:rounded-t-xl px-5 py-1 relative left-[50%] -translate-x-[50%] bg-white click transition duration-1000 delay-100"
@@ -66,63 +70,67 @@
         設定
       </div>
       <div
-        class="bg-white px-5 py-10 sm:p-8 rounded-t-[10px] sm:rounded-t-[20px] w-screen shadow-sm h-[80dvh] sm:h-[50dvh] flex flex-col gap-5 overflow-auto"
+        class="bg-white px-8 py-10 sm:p-8 rounded-t-[10px] sm:rounded-t-[20px] w-screen shadow-sm h-[80dvh] sm:h-[70dvh] flex flex-col gap-5 overflow-auto"
       >
-        <div class="flex items-center gap-4">
-          <span class="m-auto flex items-center gap-2">
-            <label for="score">最高分</label>
-            <select v-model="maxScore" placeholder="請選擇" :disabled="gameIsStart">
-              <option v-for="score in scoreOptions" :key="score" :value="score">{{ score }}</option>
-            </select>
-          </span>
-          <span class="m-auto flex items-center gap-2">
-            <label for="score">單雙打</label>
-            <select v-model="playerPerTeam" placeholder="請選擇" :disabled="gameIsStart">
-              >
-              <option value="1">單打</option>
-              <option value="2">雙打</option>
-            </select>
-          </span>
-        </div>
-        <div class="grid grid-cols-1 sm:grid-cols-2 gap-5">
-          <div class="flex flex-col gap-3 sm:border-r-1 border-neutral-300">
-            <h2 class="text-xl">隊A</h2>
-            <div class="flex">
-              <label for="" class="flex-1">選手1</label>
-              <input v-model="teamA.playerA" type="text" class="flex-2" />
+        <div class="flex flex-col gap-8">
+          <div class="flex items-center gap-4">
+            <span class="m-auto flex items-center gap-2">
+              <label for="score">最高分</label>
+              <select v-model="maxScore" placeholder="請選擇" :disabled="gameIsStart">
+                <option v-for="score in scoreOptions" :key="score" :value="score">
+                  {{ score }}
+                </option>
+              </select>
+            </span>
+            <span class="m-auto flex items-center gap-2">
+              <label for="score">單雙打</label>
+              <select v-model="playerPerTeam" placeholder="請選擇" :disabled="gameIsStart">
+                >
+                <option value="1">單打</option>
+                <option value="2">雙打</option>
+              </select>
+            </span>
+          </div>
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-5">
+            <div class="flex flex-col gap-3 sm:border-r-1 border-neutral-300">
+              <h2 class="text-xl">隊A</h2>
+              <div class="flex">
+                <label for="" class="flex-1">選手1</label>
+                <input v-model="teamA.playerA" type="text" class="flex-2" />
+              </div>
+              <div class="flex">
+                <label for="" class="flex-1">選手2</label>
+                <input
+                  v-model="teamA.playerB"
+                  type="text"
+                  class="flex-2"
+                  :disabled="playerPerTeam === '1'"
+                />
+              </div>
             </div>
-            <div class="flex">
-              <label for="" class="flex-1">選手2</label>
-              <input
-                v-model="teamA.playerB"
-                type="text"
-                class="flex-2"
-                :disabled="playerPerTeam === '1'"
-              />
+            <div class="flex flex-col gap-3">
+              <h2 class="text-xl">隊B</h2>
+              <div class="flex">
+                <label for="" class="flex-1">選手1</label>
+                <input v-model="teamB.playerA" type="text" class="flex-2" />
+              </div>
+              <div class="flex">
+                <label for="" class="flex-1">選手2</label>
+                <input
+                  v-model="teamB.playerB"
+                  type="text"
+                  class="flex-2"
+                  :disabled="playerPerTeam === '1'"
+                />
+              </div>
             </div>
           </div>
-          <div class="flex flex-col gap-3">
-            <h2 class="text-xl">隊B</h2>
-            <div class="flex">
-              <label for="" class="flex-1">選手1</label>
-              <input v-model="teamB.playerA" type="text" class="flex-2" />
-            </div>
-            <div class="flex">
-              <label for="" class="flex-1">選手2</label>
-              <input
-                v-model="teamB.playerB"
-                type="text"
-                class="flex-2"
-                :disabled="playerPerTeam === '1'"
-              />
-            </div>
+          <div class="flex justify-end gap-3 font-bold">
+            <!-- :class="gameIsStart ? '' : 'outline'" -->
+            <button @click="gameIsStart ? EndGame() : initGame()">
+              {{ gameIsStart ? '結束' : '開始' }}
+            </button>
           </div>
-        </div>
-        <div class="flex justify-end gap-3 font-bold">
-          <!-- :class="gameIsStart ? '' : 'outline'" -->
-          <button @click="gameIsStart ? EndGame() : initGame()">
-            {{ gameIsStart ? '結束' : '開始' }}
-          </button>
         </div>
       </div>
     </nav>
