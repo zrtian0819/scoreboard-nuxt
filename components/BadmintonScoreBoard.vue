@@ -1,20 +1,22 @@
 <template>
   <div
     id="app"
-    class="w-screen h-screen bg-green flex p-8 overflow-hidden relative no-double-tap-zoom"
+    class="w-[100dvw] h-[100dvh] bg-green flex p-8 overflow-hidden relative no-double-tap-zoom"
   >
     <div class="grid grid-cols-2 text-white w-full h- full border-white border-8">
       <div class="border-white border-r-4 flex flex-col justify-center items-center gap-6 relative">
-        <span
+        <!-- <span
           class="absolute right-5 top-[50%] -translate-y-[50%] flex items-center justify-center cursor-pointer"
           @click="switchPlace('A')"
         >
           <MoveVertical class="w-10 h-10" />
-        </span>
+        </span> -->
         <div class="flex text-4xl">
           <span v-show="currentTeam === 'A' && teamA.score % 2 !== 0">🏸</span>
           {{ teamA.oddPlace }}
         </div>
+
+        <span v-show="winTeam === 'A'" class="absolute top-5 text-5xl animate-bounce">👑</span>
         <div
           class="bg-green px-2 text-[12dvw] flex flex-row items-center cursor-pointer select-none"
           @click="getScore('A')"
@@ -27,16 +29,18 @@
         </div>
       </div>
       <div class="border-white border-l-4 flex flex-col justify-center items-center gap-6 relative">
-        <span
+        <!-- <span
           class="absolute left-5 top-[50%] -translate-y-[50%] flex items-center justify-center cursor-pointer"
           @click="switchPlace('B')"
         >
           <MoveVertical class="w-10 h-10" />
-        </span>
+        </span> -->
         <div class="flex text-4xl">
           <span v-show="currentTeam === 'B' && teamB.score % 2 == 0">🏸</span>
           {{ teamB.evenPlace }}
         </div>
+
+        <span v-show="winTeam === 'B'" class="absolute top-5 text-5xl animate-bounce">👑</span>
         <div
           class="bg-green px-2 text-[12dvw] flex flex-row items-center cursor-pointer select-none"
           @click="getScore('B')"
@@ -134,6 +138,7 @@ const maxScore = ref(21)
 const playerPerTeam = ref('2')
 const lastGetScoreTeam = ref<team>(undefined)
 const currentTeam = ref<team>(undefined)
+const winTeam = ref<team>(undefined)
 // 定義得分選項
 const scoreOptions = ref([11, 21, 25])
 
@@ -154,17 +159,35 @@ const teamB = reactive({ ...initTeamObj })
 
 // 方法
 const initGame = () => {
+  // 重設頁面縮放比例
+  // document.documentElement.style.zoom = '1'
+
+  // const viewport = document.querySelector('meta[name=viewport]') as HTMLMetaElement
+  // console.log(viewport)
+  // if (viewport) {
+  //   viewport.content = 'width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no'
+  // }
+
+  isSettingOpen.value = true
+  lastGetScoreTeam.value = undefined
+  currentTeam.value = undefined
+  winTeam.value = undefined
+
+  teamA.score = 0
+  teamB.score = 0
+  teamA.evenPlace = ''
+  teamA.oddPlace = ''
+  teamB.evenPlace = ''
+  teamB.oddPlace = ''
+
   randomStart()
 }
 
 const EndGame = () => {
-  isSettingOpen.value = true
   gameIsStart.value = false
-  lastGetScoreTeam.value = undefined
-  currentTeam.value = undefined
   // Reset teams
-  Object.assign(teamA, { ...initTeamObj })
-  Object.assign(teamB, { ...initTeamObj })
+  // Object.assign(teamA, { ...initTeamObj })
+  // Object.assign(teamB, { ...initTeamObj })
 
   alert('比賽已結束，請重新設定！')
 }
@@ -246,26 +269,92 @@ const switchPlace = (team: team) => {
 
 const getScore = (team: team) => {
   if (!gameIsStart.value) return alert('請先開始比賽')
-  if (!team) return console.error('team is undefined')
 
-  if (team === 'A') {
-    teamA.score++
-    currentTeam.value = 'A'
-    switchPlace('A')
-    lastGetScoreTeam.value = 'A'
-  } else {
-    teamB.score++
-    currentTeam.value = 'B'
-    switchPlace('B')
-    lastGetScoreTeam.value = 'B'
+  // 站位邏輯
+  // if (team === 'A') {
+  //   teamA.score++
+  //   currentTeam.value = 'A'
+  //   if (playerPerTeam.value === '2') {
+  //     switchPlace('A')
+  //   }
+  //   if (playerPerTeam.value === '1') {
+  //     console.log(teamA, teamB)
+  //     if (teamA.evenPlace !== '' && teamB.evenPlace === '') {
+  //       switchPlace('B')
+  //     }
+  //     if (teamA.oddPlace !== '' && teamB.oddPlace === '') {
+  //       switchPlace('B')
+  //     }
+  //   }
+  //   lastGetScoreTeam.value = 'A'
+  // } else {
+  //   teamB.score++
+  //   currentTeam.value = 'B'
+  //   if (playerPerTeam.value === '2') {
+  //     switchPlace('B')
+  //   }
+  //   if (playerPerTeam.value === '1') {
+  //     console.log(teamA, teamB)
+  //     if (teamB.evenPlace !== '' && teamA.evenPlace === '') {
+  //       switchPlace('A')
+  //     }
+  //     if (teamB.oddPlace !== '' && teamA.oddPlace === '') {
+  //       switchPlace('A')
+  //     }
+  //   }
+  //   lastGetScoreTeam.value = 'B'
+  // }
+
+  // const currentGetScoreTeam = team === 'A' ? 'A' : 'B';
+
+  if (playerPerTeam.value === '1') {
+    let currentScoreIsEven
+
+    if (team === 'A') {
+      teamA.score++
+      currentTeam.value = 'A'
+      lastGetScoreTeam.value = 'A'
+      currentScoreIsEven = isEven(teamA.score)
+    } else {
+      teamB.score++
+      currentTeam.value = 'B'
+      lastGetScoreTeam.value = 'B'
+      currentScoreIsEven = isEven(teamB.score)
+    }
+
+    if (currentScoreIsEven) {
+      teamA.evenPlace = teamA.playerA
+      teamA.oddPlace = ''
+      teamB.evenPlace = teamB.playerA
+      teamB.oddPlace = ''
+    } else {
+      teamA.oddPlace = teamA.playerA
+      teamA.evenPlace = ''
+      teamB.oddPlace = teamB.playerA
+      teamB.evenPlace = ''
+    }
+  } else if (playerPerTeam.value === '2') {
+    if (team === 'A') {
+      teamA.score++
+      currentTeam.value = 'A'
+      lastGetScoreTeam.value = 'A'
+      switchPlace('A')
+    } else {
+      teamB.score++
+      currentTeam.value = 'B'
+      lastGetScoreTeam.value = 'B'
+      switchPlace('B')
+    }
   }
 
   if (teamA.score >= Number(maxScore.value) && teamA.score - teamB.score >= 2) {
     alert(`${teamA.playerA} & ${teamA.playerB} 贏了！`)
+    winTeam.value = 'A'
     gameIsStart.value = false
     // initGame()
   } else if (teamB.score >= Number(maxScore.value) && teamB.score - teamA.score >= 2) {
     alert(`${teamB.playerA} & ${teamB.playerB} 贏了！`)
+    winTeam.value = 'B'
     gameIsStart.value = false
     // initGame()
   } else if (
@@ -276,31 +365,35 @@ const getScore = (team: team) => {
   }
 }
 
-// 禁止雙擊放大
-onMounted(() => {
-  document.addEventListener(
-    'touchstart',
-    function (event) {
-      if (event.touches.length > 1) {
-        event.preventDefault()
-      }
-    },
-    { passive: false }
-  )
+// 禁止雙擊放大   //暫時先取消😢
+// onMounted(() => {
+//   document.addEventListener(
+//     'touchstart',
+//     function (event) {
+//       if (event.touches.length > 1) {
+//         event.preventDefault()
+//       }
+//     },
+//     { passive: false }
+//   )
 
-  let lastTouchEnd = 0
-  document.addEventListener(
-    'touchend',
-    function (event) {
-      const now = new Date().getTime()
-      if (now - lastTouchEnd <= 300) {
-        event.preventDefault()
-      }
-      lastTouchEnd = now
-    },
-    { passive: false }
-  )
-})
+//   let lastTouchEnd = 0
+//   document.addEventListener(
+//     'touchend',
+//     function (event) {
+//       const now = new Date().getTime()
+//       if (now - lastTouchEnd <= 300) {
+//         event.preventDefault()
+//       }
+//       lastTouchEnd = now
+//     },
+//     { passive: false }
+//   )
+// })
+
+const isEven = (num: number) => {
+  return num % 2 === 0
+}
 </script>
 
 <style scoped lang="scss">
@@ -525,6 +618,18 @@ button {
   &::-webkit-scrollbar-track {
     box-shadow: inset 0 0 8px rgba(0, 0, 0, 0.12);
     margin: 6px;
+  }
+}
+
+@keyframes jump {
+  0% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-10px);
+  }
+  100% {
+    transform: translateY(0);
   }
 }
 
