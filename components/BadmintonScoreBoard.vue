@@ -78,7 +78,7 @@
         設定
       </div>
       <div
-        class="bg-white px-8 py-10 sm:p-8 rounded-t-[10px] sm:rounded-t-[20px] w-screen shadow-sm h-[80dvh] sm:h-[70dvh] flex flex-col gap-5 overflow-auto"
+        class="bg-white pt-10 sm:pt-auto p-5 md:p-10 xl:p-16 rounded-t-[10px] sm:rounded-t-[20px] w-screen shadow-sm h-[80dvh] sm:h-[70dvh] flex flex-col gap-5 overflow-auto"
       >
         <div class="flex flex-col gap-8">
           <div class="flex items-center gap-4">
