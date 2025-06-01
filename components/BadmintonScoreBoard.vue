@@ -1,11 +1,11 @@
 <template>
   <div
     id="app"
-    class="w-[100dvw] h-[100dvh] bg-green flex p-8 overflow-hidden relative no-double-tap-zoom"
+    class="w-[100dvw] h-[100dvh] bg-green flex p-4 sm:p-8 overflow-hidden relative no-double-tap-zoom"
   >
     <div class="grid grid-cols-1 sm:grid-cols-2 text-white w-full h- full border-white border-8">
       <div
-        class="border-white border-b-4 sm:border-b-0 sm:border-r-4 flex flex-row-reverse sm:flex-col justify-center items-center gap-6 relative"
+        class="border-white border-b-4 sm:border-b-0 sm:border-r-4 flex flex-row-reverse sm:flex-col justify-center items-center gap-2 sm:gap-4 relative"
       >
         <!-- <span
           class="absolute right-5 top-[50%] -translate-y-[50%] flex items-center justify-center cursor-pointer"
@@ -13,25 +13,29 @@
         >
           <MoveVertical class="w-10 h-10" />
         </span> -->
-        <div class="flex text-4xl">
+        <div class="flex text-2xl sm:text-4xl">
           <span v-show="currentTeam === 'A' && teamA.score % 2 !== 0">🏸</span>
           {{ teamA.oddPlace }}
         </div>
 
-        <span v-show="winTeam === 'A'" class="absolute top-5 text-5xl animate-bounce">👑</span>
+        <span
+          v-show="winTeam === 'A'"
+          class="absolute top-5 sm:top-auto sm:right-5 text-5xl animate-bounce"
+          >👑</span
+        >
         <div
           class="bg-green px-2 text-[12dvw] flex flex-row items-center cursor-pointer select-none"
           @click="getScore('A')"
         >
           {{ teamA.score }}
         </div>
-        <div class="flex text-4xl">
+        <div class="flex text-2xl sm:text-4xl">
           <span v-show="currentTeam === 'A' && teamA.score % 2 == 0">🏸</span>
           {{ teamA.evenPlace }}
         </div>
       </div>
       <div
-        class="border-white border-t-4 sm:border-t-0 sm:border-l-4 flex flex-row-reverse sm:flex-col justify-center items-center gap-6 relative"
+        class="border-white border-t-4 sm:border-t-0 sm:border-l-4 flex flex-row-reverse sm:flex-col justify-center items-center gap-2 sm:gap-4 relative"
       >
         <!-- <span
           class="absolute left-5 top-[50%] -translate-y-[50%] flex items-center justify-center cursor-pointer"
@@ -39,19 +43,23 @@
         >
           <MoveVertical class="w-10 h-10" />
         </span> -->
-        <div class="flex text-4xl">
+        <div class="flex text-2xl sm:text-4xl">
           <span v-show="currentTeam === 'B' && teamB.score % 2 == 0">🏸</span>
           {{ teamB.evenPlace }}
         </div>
 
-        <span v-show="winTeam === 'B'" class="absolute top-5 text-5xl animate-bounce">👑</span>
+        <span
+          v-show="winTeam === 'B'"
+          class="absolute top-5 sm:top-auto sm:left-5 text-5xl animate-bounce"
+          >👑</span
+        >
         <div
           class="bg-green px-2 text-[12dvw] flex flex-row items-center cursor-pointer select-none"
           @click="getScore('B')"
         >
           {{ teamB.score }}
         </div>
-        <div class="flex text-4xl">
+        <div class="flex text-2xl sm:text-4xl">
           <span v-show="currentTeam === 'B' && teamB.score % 2 !== 0">🏸</span>
           {{ teamB.oddPlace }}
         </div>
